@@ -6,7 +6,6 @@ export default defineComponent({
   setup() {
     const percentage=ref(0);
     function alertPercentage() {
-      console.log(percentage.value);
       percentage.value++;
     }
   
