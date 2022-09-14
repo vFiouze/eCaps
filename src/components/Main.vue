@@ -27,15 +27,17 @@
             this.step++
 
           },
-          saveInfo(selectedBlocks) {
-            console.log('i got you')
-            console.log(JSON.stringify(selectedBlocks))
+          saveInfo(selectedBlocks, documentId) {
+            const data = {
+              selectedBlocks:JSON.stringify(selectedBlocks),
+              documentId:documentId
+            }
             fetch('http://localhost:8080/api/save-selected-blocks', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify(selectedBlocks)
+              body: JSON.stringify(data)
             })
 
           }
@@ -44,7 +46,7 @@
 </script>
 
 <template>
-  <Ocr @saveInfo="saveInfo" :data="ocrData" :step="step"/>
+  <Ocr @saveInfo="saveInfo" :rawData="ocrData" :step="step"/>
     <el-container>
       <el-header>
         <Header/>

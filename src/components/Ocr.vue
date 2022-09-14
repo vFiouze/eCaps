@@ -1,8 +1,11 @@
 <script>
+import { forEach } from 'lodash'
+
     export default {
-        props : ['data','step'],
+        props : ['rawData','data','step', 'savedBlocks'],
         data(){
             return {
+                documentId: null,
                 selectedBlocks : {},
                 colors : {
                     1:'black',
@@ -11,16 +14,31 @@
                     'default': 'red' 
                 },
                 canvasContext: null,
-                drawingInfo : []
+                drawingInfo : [],
             }
         },
         emit : ['saveInfo'],
-        watch: { 
-            data: function(newVal, oldVal) {
+        watch: {
+            savedBlocks: function (newVal, oldVal) {
+                console.log('in ocr after getting blocks')
+                console.log(newVal)
+                this.canvasContext = this.getCanvasContext()
+                Object.keys(newVal.selectedBlocks).forEach(key => {
+                    let type = key == 1 ? 'fill' : 'stroke'
+                    let step = parseInt(key)
+                    let color = this.colors[step]
+                    this.drawAllBlocks(Object.values(newVal.selectedBlocks[key]), type, color );
+                }
+            )},
+            rawData: function(newVal, oldVal) {
                 const canvas = document.querySelector("#canvas");
                 const ctx = canvas.getContext('2d');
                 this.canvasContext = ctx
-                this.drawImage(newVal)
+                this.documentId = newVal.documentId
+                this.identifyBlocks(newVal.ocr);
+                this.drawAllBlocks(this.drawingInfo);
+                this.handleEventListener();
+                // this.drawImage(newVal)
             },
             step: function(newVal, oldVal) {
                 if (newVal != 1  && newVal < 4) {
@@ -30,13 +48,16 @@
                     //remove event listener
                     document.querySelector('#canvas')
                         .removeEventListener('click', this.handleClick)
-                    this.$emit('saveInfo', this.selectedBlocks)
+                    this.$emit('saveInfo', this.selectedBlocks, this.documentId)
                         
                     
                 }
             }
         },
         methods: {
+            documentLoaded(data) {
+                console.log('data')
+            },
             selectionDone() {
                 //loop and change the draw type
                 this.selectedBlocks[this.step].forEach(block => {
@@ -56,9 +77,10 @@
                 
             },
             drawImage(data) {
-                this.identifyBlocks(data);
-                this.drawAllBlocks(this.drawingInfo);
-                this.handleEventListener();
+                this.documentId = data.documentId
+                
+                
+                
             },
             isInblock(e, block) {
                 const x = e.layerX
@@ -160,13 +182,24 @@
                 this.drawingInfo = drawBlockInfo
             },
 
-            drawAllBlocks(drawBlockInfo) {
+            drawAllBlocks(drawBlockInfo, type, color) {
                 drawBlockInfo.forEach(drawInfo=> {
-                    this.canvasContext.strokeStyle = this.colors.default
-                    this.canvasContext.strokeRect(parseInt(drawInfo.leftForBlock), 
+                    this.canvasContext.strokeStyle = color
+                    console.log(drawInfo.leftForBlock)
+                    console.log(drawInfo.topForBlock)
+                    console.log(drawInfo.widthForBlock)
+                    console.log(drawInfo.heightForBlock)
+                    if (type=='stroke') {
+                        this.canvasContext.strokeRect(parseInt(drawInfo.leftForBlock), 
                                     parseInt(drawInfo.topForBlock),
                                     parseInt(drawInfo.widthForBlock),
                                     parseInt(drawInfo.heightForBlock))
+                    } else {
+                        this.canvasContext.fillRect(parseInt(drawInfo.leftForBlock), 
+                                    parseInt(drawInfo.topForBlock),
+                                    parseInt(drawInfo.widthForBlock),
+                                    parseInt(drawInfo.heightForBlock))
+                    }  
                 })
             },
             clearBlock(block){

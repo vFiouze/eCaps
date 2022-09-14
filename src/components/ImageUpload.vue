@@ -56,18 +56,17 @@ export default {
         const formData = new FormData();
         formData.append("image", this.files[0].raw);
         const header = new Headers();
-
-        header.append('Accept', 'application/text')
+        header.append('Accept', 'application/json')
         fetch('http://localhost:8080/api/file-upload', {
             method: 'POST',
             body: formData,
             headers: header,
         })
         .then(response => {
-            return response.text()
+            return response.json()
         })
-        .then(resAsText => {
-            this.$emit('uploadDone', resAsText)
+        .then(resAsJson => {
+            this.$emit('uploadDone', resAsJson)
             this.canUpload = false
             this.showPercentage = true;
             this.loading=false;

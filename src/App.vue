@@ -21,7 +21,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <Main ></Main>
+  <router-view></router-view>
 </template>
 
 <style scoped>
