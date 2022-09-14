@@ -17,7 +17,10 @@
                     method: "POST",
                     body: formData,
                 }).then(res => {
-                    console.log('big todo')
+                    return res.blob()
+                }).then( resBlob => {
+                    const objectUrl = URL.createObjectURL(resBlob);
+                    console.log(objectUrl)
                     const image = new Image();
                     const vm = this
                     image.onload = (e) => {
@@ -27,23 +30,7 @@
                         canvas.style.backgroundImage = `url(${image.src})`;
                         vm.getSavedBlocks()
                     }
-                    image.src = '/triumph_1.png'
-                // }).then(imageBlobResponse => {
-                //     console.log(imageBlobResponse)
-                //     const fileReader = new FileReader()
-                //     const data = fileReader.readAsArrayBuffer(imageBlobResponse)
-                //     .then(function(buffer){
-                //         const blobImage = new Blob([buffer], {type: "image/png"});
-                //         const imageObjectURL = URL.createObjectURL(blobImage);
-                //         console.log(blobImage)
-                //         const image = new Image();
-                //         image.onload = () => {
-                //             const divImage = this.document.querySelector("#document")
-                //             divImage.appendChild(image)
-                //         }
-                //         image.src = imageObjectURL;
-                //     })
-                    
+                    image.src = objectUrl
                 })
             },
             getSavedBlocks() {

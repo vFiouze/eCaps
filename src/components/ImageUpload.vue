@@ -10,7 +10,6 @@ export default {
       showImage: false,
       image: null,
       drawingInfo : null,
-      
       ratio:1,
       rawDataFromOcr:null,
       files : [],
@@ -19,7 +18,6 @@ export default {
       showPercentage:false,
       step:0,
       loading: false,
-      
     }
   },
   emits: [

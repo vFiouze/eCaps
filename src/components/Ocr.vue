@@ -36,7 +36,7 @@ import { forEach } from 'lodash'
                 this.canvasContext = ctx
                 this.documentId = newVal.documentId
                 this.identifyBlocks(newVal.ocr);
-                this.drawAllBlocks(this.drawingInfo);
+                this.drawAllBlocks(this.drawingInfo, 'stroke', this.colors.default);
                 this.handleEventListener();
                 // this.drawImage(newVal)
             },
@@ -185,10 +185,6 @@ import { forEach } from 'lodash'
             drawAllBlocks(drawBlockInfo, type, color) {
                 drawBlockInfo.forEach(drawInfo=> {
                     this.canvasContext.strokeStyle = color
-                    console.log(drawInfo.leftForBlock)
-                    console.log(drawInfo.topForBlock)
-                    console.log(drawInfo.widthForBlock)
-                    console.log(drawInfo.heightForBlock)
                     if (type=='stroke') {
                         this.canvasContext.strokeRect(parseInt(drawInfo.leftForBlock), 
                                     parseInt(drawInfo.topForBlock),

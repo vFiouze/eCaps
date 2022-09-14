@@ -14,7 +14,8 @@
           return {
             ocrData : null,
             step:0,
-            percentage:0
+            percentage:0,
+            documentId:null
           }
         },
         methods: {
@@ -28,6 +29,7 @@
 
           },
           saveInfo(selectedBlocks, documentId) {
+            this.documentId = documentId
             const data = {
               selectedBlocks:JSON.stringify(selectedBlocks),
               documentId:documentId
@@ -38,6 +40,12 @@
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify(data)
+            })
+            .then(res=> {
+              return res.text()
+            })
+            .then(documentId => {
+              
             })
 
           }
@@ -59,6 +67,9 @@
           <el-col>
             <Tutorial @selectionDone="selectionDone" :step=step />  
           </el-col>
+        </el-row>
+        <el-row v-if="ocrData">
+          {{ocrData.documentId}}
         </el-row>
         <el-row>
           <ImageUpload @uploadDone="sendDataToOcr"/>
